@@ -33,7 +33,7 @@ if test $x -lt 0; then
 	output=$(eval "$@" 2>"$E")
 	rc="$?"
 	if [ "$rc" == 0 ] ; then
-		echo "$output" > "$O"
+		echo -n "$output" > "$O"
 		echo "$now" > "$T"
 	fi
 	echo "$rc" > "$R"
