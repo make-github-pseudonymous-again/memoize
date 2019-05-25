@@ -10,7 +10,6 @@ for a in "$@" ; do
 done
 
 cache="$HOME/.cache/memoize/$(sha1sum "$tmp" | head -c 40)"
-rm "$tmp"
 
 O="$cache""/O"
 E="$cache""/E"
@@ -31,6 +30,8 @@ if test $x -lt 0; then
 	echo "$?" > "$R"
 	echo "$now" > "$T"
 fi
+
+rm "$tmp"
 
 cat "$O"
 cat "$E" >&2
