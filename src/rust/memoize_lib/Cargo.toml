@@ -1,5 +1,5 @@
 [package]
-name = "memoize"
+name = "memoize_lib"
 version = "0.1.0"
 authors = ["Aurélien Ooms <aurelien.ooms@gmail.com>"]
 edition = "2018"
@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 
-rand = "0.3.14"
-memoize_lib = { path = "../memoize_lib" }
+dirs = "2.0.2"
+sha-1 = "0.8.1"

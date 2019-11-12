@@ -1,90 +1,44 @@
-use std::env;
-use std::fs;
 use std::process;
-use std::time::SystemTime;
-use sha1::{Sha1, Digest};
+
+use memoize_lib::args;
+use memoize_lib::cache;
+use memoize_lib::time;
 
 fn main () {
 
-    let args: Vec<String> = env::args().collect();
+    let (validity, cmdline) = args::parse();
 
-    let validity = &args[1];
-    let validity: i64 = match validity.trim().parse() {
-        Ok(num) => num,
-        Err(_) => {
-            eprintln!("wrong validity {}, expected number (i32)", validity);
-            process::exit(1);
-        },
-    };
-    //eprintln!("validity: {}", validity);
+    let key = cache::get_key(&cmdline);
 
-    let cmdline = args[2..].to_vec();
-    //eprintln!("cmdline: {:?}", cmdline);
+    let cache_path = cache::get_path(&key);
 
-    let mut hasher = Sha1::new();
-
-    for arg in &cmdline {
-        hasher.input(arg);
-        hasher.input("\n");
+    if ! cache::exists(&cache_path) {
+        eprintln!("no entry for {:?}", cmdline);
+        process::exit(1);
     }
-
-    let hash = hasher.result();
-
-    let home_dir = dirs::home_dir()
-        .expect("Impossible to get your home dir!");
-
-    let cache = format!("{}/.cache/memoize/{:x}", home_dir.display(), hash);
-
-    let out = format!("{}/O", cache);
-    let err = format!("{}/E", cache);
-    let ret = format!("{}/R", cache);
-    let tim = format!("{}/T", cache);
-
-    let output = match fs::read_to_string(out) {
-        Ok(string) => string,
-        Err(_) => {
-            eprintln!("no entry for {:?}", cmdline);
-            process::exit(1);
-        }
-    } ;
 
     if validity >= 0 {
 
         let validity = validity as u64;
 
-        match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-            Ok(elapsed) => {
+        let now = time::now();
 
-                let now = elapsed.as_secs();
+        let previous = cache::get_timestamp(&cache_path);
 
-                let previous: u64 = fs::read_to_string(tim)
-                    .expect("Could not read tim file.")
-                    .trim()
-                    .parse()
-                    .expect("Could not parse previous.");
-
-                if previous + validity < now {
-                    eprintln!("Entry expired for '{:?}'", cmdline);
-                    process::exit(2);
-                }
-
-            },
-            Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+        if previous + validity < now {
+            eprintln!("Entry expired for '{:?}'", cmdline);
+            process::exit(2);
         }
 
     }
 
+    let output = cache::get_output(&cache_path);
     print!("{}",output);
 
-    let error = fs::read_to_string(err)
-        .expect("Could not read err file.");
+    let error = cache::get_error(&cache_path);
     eprint!("{}",error);
 
-    let rc: i32 = fs::read_to_string(ret)
-        .expect("Could not read ret file.")
-        .trim()
-        .parse()
-        .expect("Could not parse rc.");
-
+    let rc = cache::get_returncode(&cache_path);
     process::exit(rc);
+
 }

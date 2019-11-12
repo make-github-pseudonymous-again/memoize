@@ -194,8 +194,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "memoize"
 version = "0.1.0"
 dependencies = [
- "dirs 2.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memoize_lib 0.1.0",
  "rand 0.3.23 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "memoize_lib"
+version = "0.1.0"
+dependencies = [
+ "dirs 2.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "sha-1 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

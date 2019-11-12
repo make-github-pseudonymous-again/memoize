@@ -1,37 +1,64 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
+use std::fs;
+use std::process;
+
+use memoize_lib::args;
+use memoize_lib::cache;
+use memoize_lib::time;
 
 fn main () {
-    println!("Guess the number!");
 
-    let secret_number = rand::thread_rng().gen_range(1, 101);
+    let (validity, cmdline) = args::parse();
 
-    loop {
+    let key = cache::get_key(&cmdline);
 
-        println!("Please input your guess.");
+    let cache_path = cache::get_path(&key);
 
-        let mut guess = String::new();
+    let now = time::now();
 
-        io::stdin().read_line(&mut guess)
-            .expect("Failed to read line");
+    let fresh = match cache::exists(&cache_path) {
+        true => {
+            if validity < 0 {
+                false
+            }
+            else {
+                let validity = validity as u64 ;
+                let previous = cache::get_timestamp(&cache_path);
+                previous + validity >= now
+            }
+        },
+        false => {
+            fs::create_dir_all(&cache_path)
+                .expect("Could not create cache dir");
+            false
+        },
+    } ;
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
+    if ! fresh {
 
-        println!("You guessed: {}", guess);
+        let executable = &cmdline[0];
+        let arguments = &cmdline[1..];
 
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            },
-        }
+        let proc = process::Command::new(executable)
+            .args(arguments)
+            .output()
+            .expect("failed to execute process");
+
+        let timestamp = now;
+        let returncode = proc.status.code().unwrap_or(-1);
+        let out = proc.stdout;
+        let err = proc.stderr;
+
+        cache::overwrite(&cache_path, &out, &err, timestamp, returncode);
 
     }
+
+    let output = cache::get_output(&cache_path);
+    print!("{}",output);
+
+    let error = cache::get_error(&cache_path);
+    eprint!("{}",error);
+
+    let rc = cache::get_returncode(&cache_path);
+    process::exit(rc);
 
 }

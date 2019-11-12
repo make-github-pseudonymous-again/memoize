@@ -37,12 +37,9 @@ build-rust: $(RUSTSOURCES)
 
 check-rust: $(RUSTSOURCES)
 	cargo check \
+		--verbose \
 		--manifest-path $(RUSTPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
-
-#_build/rust/bin/%: $(RUSTSRC)/%.rs
-	#mkdir -p $(dir $@)
-	#rustc $^ -o $@
 
 clean:
 	rm -rf _build
