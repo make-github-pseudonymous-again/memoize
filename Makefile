@@ -1,4 +1,4 @@
-.PHONY: all install install-shell build-rust build-rust-release check-rust clean
+.PHONY: all install install-shell build-rust build-rust-release check-rust test-rust clean
 
 VERSION = 1.0.0
 PN = memoize
@@ -9,8 +9,10 @@ BINDIR = $(PREFIX)/bin
 SHSRC = src/sh
 
 RUSTPACKAGE = src/rust/memoize
+RUSTLIBPACKAGE = src/rust/memoize_lib
 RUSTSRC = $(RUSTPACKAGE)/src/bin
 RUSTBIN = _build/rust/bin
+RUSTLIB = _build/rust/lib
 RUSTSOURCES = $(shell find $(RUSTSRC) -type f)
 RUSTBINARIES = $(basename $(subst $(RUSTSRC),$(RUSTBIN),$(RUSTSOURCES)))
 
@@ -40,6 +42,12 @@ check-rust: $(RUSTSOURCES)
 		--verbose \
 		--manifest-path $(RUSTPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
+
+test-rust: $(RUST)
+	cargo test \
+		--verbose \
+		--manifest-path $(RUSTLIBPACKAGE)/Cargo.toml \
+		--target-dir $(RUSTLIB)
 
 clean:
 	rm -rf _build
