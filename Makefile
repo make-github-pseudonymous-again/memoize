@@ -1,4 +1,4 @@
-.PHONY: all install install-shell build-rust build-rust-release check-rust test-rust clean
+.PHONY: all install install-shell build-rust build-rust-release check-rust test-rust test-rust-bin test-rust-lib clean
 
 VERSION = 1.0.0
 PN = memoize
@@ -8,9 +8,9 @@ BINDIR = $(PREFIX)/bin
 
 SHSRC = src/sh
 
-RUSTPACKAGE = src/rust/memoize
+RUSTBINPACKAGE = src/rust/memoize
 RUSTLIBPACKAGE = src/rust/memoize_lib
-RUSTSRC = $(RUSTPACKAGE)/src/bin
+RUSTSRC = $(RUSTBINPACKAGE)/src/bin
 RUSTBIN = _build/rust/bin
 RUSTLIB = _build/rust/lib
 RUSTSOURCES = $(shell find $(RUSTSRC) -type f)
@@ -29,21 +29,29 @@ install-shell:
 build-rust-release: $(RUSTSOURCES)
 	cargo build \
 		--release \
-		--manifest-path $(RUSTPACKAGE)/Cargo.toml \
+		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
 
 build-rust: $(RUSTSOURCES)
 	cargo build \
-		--manifest-path $(RUSTPACKAGE)/Cargo.toml \
+		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
 
 check-rust: $(RUSTSOURCES)
 	cargo check \
 		--verbose \
-		--manifest-path $(RUSTPACKAGE)/Cargo.toml \
+		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
 
-test-rust: $(RUST)
+test-rust: test-rust-lib test-rust-bin
+
+test-rust-bin: $(RUST)
+	cargo test \
+		--verbose \
+		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
+		--target-dir $(RUSTBIN)
+
+test-rust-lib: $(RUST)
 	cargo test \
 		--verbose \
 		--manifest-path $(RUSTLIBPACKAGE)/Cargo.toml \

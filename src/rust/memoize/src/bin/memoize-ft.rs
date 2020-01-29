@@ -11,7 +11,8 @@ fn main () {
 
     let key = cache::get_key(&cmdline);
 
-    let cache_path = cache::get_path(&key);
+    let cache_root = cache::get_default_root();
+    let cache_path = cache::get_path(&cache_root, &key);
 
     let now = time::now();
 

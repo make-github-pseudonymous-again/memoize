@@ -16,7 +16,7 @@ pub fn get_key ( cmdline: &Vec<String> ) -> String {
 
 }
 
-pub fn get_root ( ) -> String {
+pub fn get_default_root ( ) -> String {
 
     let home_dir = dirs::home_dir()
         .expect("Impossible to get your home dir!");
@@ -25,9 +25,14 @@ pub fn get_root ( ) -> String {
 
 }
 
-pub fn get_path ( key: &String ) -> String {
-
-    let cache_root = get_root();
+/// ```
+/// use memoize_lib::cache::get_path;
+/// let a = "a".to_string();
+/// let b = "b".to_string();
+/// let path = get_path(&a, &b);
+/// assert_eq!(path, "a/b");
+/// ```
+pub fn get_path ( cache_root: &String, key: &String ) -> String {
 
     return format!("{}/{}", cache_root, key);
 
