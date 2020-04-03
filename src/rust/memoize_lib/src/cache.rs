@@ -7,7 +7,7 @@ pub fn get_key ( cmdline: &Vec<String> ) -> String {
 
     for arg in cmdline {
         hasher.input(arg);
-        hasher.input("\n");
+        hasher.input("\0");
     }
 
     let hash = hasher.result();

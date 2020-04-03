@@ -6,7 +6,7 @@ shift
 tmp=$(mktemp /tmp/.memoize_XXXXXXXXXX)
 
 for a in "$@" ; do
-	echo "$a" >> "$tmp"
+	printf '%s\0' "$a" >> "$tmp"
 done
 
 cache="$HOME/.cache/memoize/$(sha1sum "$tmp" | head -c 40)"
