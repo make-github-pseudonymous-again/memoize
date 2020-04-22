@@ -21,7 +21,7 @@ T="$cache""/T"
 now=$(date +%s)
 if [ -e "$O" ]; then
 	previous=$(cat "$T")
-	x=`expr $previous + $validity - $now`
+	x=$((previous + validity - now))
 else
 	mkdir -p "$cache"
 	touch "$O"
@@ -29,10 +29,10 @@ else
 	x=-1
 fi
 
-if test $x -lt 0; then
+if [ $x -lt 0 ]; then
 	eval "$@" 1>"$tmp" 2>"$E"
 	rc="$?"
-	if [ "$rc" == 0 ] ; then
+	if [ "$rc" -eq 0 ]; then
 		cp "$tmp" "$O"
 		echo "$now" > "$T"
 	fi
@@ -43,4 +43,4 @@ rm "$tmp"
 
 cat "$O"
 cat "$E" >&2
-exit $(cat "$R")
+exit "$(cat "$R")"

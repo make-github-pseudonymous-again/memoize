@@ -20,18 +20,18 @@ R="$cache""/R"
 T="$cache""/T"
 
 if [ ! -e "$O" ]; then
-	echo "no entry for '$@'" >&2
+	echo "no entry for '$*'" >&2
 	exit 1
 fi
 
-if test $validity -ge 0; then
+if [ "$validity" -ge 0 ]; then
 
 	now=$(date +%s)
 	previous=$(cat "$T")
-	x=`expr $previous + $validity - $now`
+	x=$((previous + validity - now))
 
-	if test $x -lt 0; then
-		echo "entry expired for '$@'" >&2
+	if [ "$x" -lt 0 ]; then
+		echo "entry expired for '$*'" >&2
 		exit 2
 	fi
 
@@ -41,4 +41,4 @@ rm "$tmp"
 
 cat "$O"
 cat "$E" >&2
-exit $(cat "$R")
+exit "$(cat "$R")"

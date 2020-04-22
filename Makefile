@@ -26,6 +26,9 @@ install-shell:
 	mkdir -p "$(DESTDIR)$(BINDIR)"
 	install -Dm755 $(SHSRC)/* "$(DESTDIR)$(BINDIR)"
 
+check-shell:
+	shellcheck src/sh/*
+
 build-rust-release: $(RUSTSOURCES)
 	cargo build \
 		--release \
