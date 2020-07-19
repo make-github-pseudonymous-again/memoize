@@ -1,6 +1,13 @@
 use std::fs;
 use sha1::{Sha1, Digest};
 
+/// ```
+/// use memoize_lib::cache::get_key;
+/// let v1: Vec<&str> = "Mary had a little lamb".split(' ').collect();
+/// let v2: Vec<String> = v1.iter().map(|&s| String::from(s)).collect();
+/// let key = get_key(&v2);
+/// assert_eq!(key, "dba71bb29db8d3614c9056033bcf7e59aabb8dc3");
+/// ```
 pub fn get_key ( cmdline: &Vec<String> ) -> String {
 
     let mut hasher = Sha1::new();
