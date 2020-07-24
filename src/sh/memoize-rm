@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 
+: ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
 tmp=$(mktemp /tmp/.memoize_XXXXXXXXXX)
 
 for a in "$@" ; do
 	printf '%s\0' "$a" >> "$tmp"
 done
 
-cache="$HOME/.cache/memoize/$(sha1sum "$tmp" | head -c 40)"
+cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
 rm "$tmp"
 
 rm -rf "$cache"

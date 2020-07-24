@@ -2,6 +2,7 @@
 
 # fault tolerant version of memoize
 
+: ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
 validity="$1"
 shift
 
@@ -11,7 +12,7 @@ for a in "$@" ; do
 	printf '%s\0' "$a" >> "$tmp"
 done
 
-cache="$HOME/.cache/memoize/$(sha1sum "$tmp" | head -c 40)"
+cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
 
 O="$cache""/O"
 E="$cache""/E"

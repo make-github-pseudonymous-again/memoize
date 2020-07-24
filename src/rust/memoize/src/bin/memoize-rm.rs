@@ -26,7 +26,7 @@ fn memoize_rm (cache_root: String, args: Vec<String>) {
 
 fn main () {
 
-    let cache_root = cache::get_default_root();
+    let cache_root = cache::get_root();
     let args: Vec<String> = env::args().collect();
 
     memoize_rm(cache_root, args);

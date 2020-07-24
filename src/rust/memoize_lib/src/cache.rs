@@ -1,4 +1,5 @@
 use std::fs;
+use std::env;
 use sha1::{Sha1, Digest};
 
 /// ```
@@ -23,12 +24,16 @@ pub fn get_key ( cmdline: &Vec<String> ) -> String {
 
 }
 
-pub fn get_default_root ( ) -> String {
+pub fn get_root ( ) -> String {
 
-    let home_dir = dirs::home_dir()
-        .expect("Impossible to get your home dir!");
-
-    return format!("{}/.cache/memoize", home_dir.display());
+    return match env::var("MEMOIZE_CACHE") {
+        Ok(val) => val,
+        Err(_) => {
+            let cache_dir = dirs::cache_dir()
+                .expect("Impossible to get your cache directory!");
+            return format!("{}/memoize", cache_dir.display());
+        },
+    };
 
 }
 
