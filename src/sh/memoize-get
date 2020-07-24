@@ -15,10 +15,10 @@ done
 
 cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
 
-O="$cache""/O"
-E="$cache""/E"
-R="$cache""/R"
-T="$cache""/T"
+O="${cache}/O"
+E="${cache}/E"
+R="${cache}/R"
+T="${cache}/T"
 
 if [ ! -e "$O" ]; then
 	echo "no entry for '$*'" >&2
