@@ -6,13 +6,7 @@
 validity="$1"
 shift
 
-tmp=$(mktemp /tmp/.memoize_XXXXXXXXXX)
-
-for a in "$@" ; do
-	printf '%s\0' "$a" >> "$tmp"
-done
-
-cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
+cache="${MEMOIZE_CACHE}/$(memoize-args-key "$@")"
 
 O="${cache}/O"
 E="${cache}/E"
@@ -31,6 +25,7 @@ else
 fi
 
 if [ $x -lt 0 ]; then
+	tmp=$(mktemp --tmpdir "${USER}-memoize.XXXXXXXXXX")
 	eval "$@" 1>"$tmp" 2>"$E"
 	rc="$?"
 	if [ "$rc" -eq 0 ]; then
@@ -38,9 +33,9 @@ if [ $x -lt 0 ]; then
 		echo "$now" > "$T"
 	fi
 	echo "$rc" > "$R"
+	rm "$tmp"
 fi
 
-rm "$tmp"
 
 cat "$O"
 cat "$E" >&2

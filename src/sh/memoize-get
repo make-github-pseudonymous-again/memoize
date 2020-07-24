@@ -7,13 +7,7 @@
 validity="$1"
 shift
 
-tmp=$(mktemp /tmp/.memoize_XXXXXXXXXX)
-
-for a in "$@" ; do
-	printf '%s\0' "$a" >> "$tmp"
-done
-
-cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
+cache="${MEMOIZE_CACHE}/$(memoize-args-key "$@")"
 
 O="${cache}/O"
 E="${cache}/E"
@@ -37,8 +31,6 @@ if [ "$validity" -ge 0 ]; then
 	fi
 
 fi
-
-rm "$tmp"
 
 cat "$O"
 cat "$E" >&2

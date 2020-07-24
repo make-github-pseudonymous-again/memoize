@@ -1,13 +1,6 @@
 #!/usr/bin/env sh
 
 : ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
-tmp=$(mktemp /tmp/.memoize_XXXXXXXXXX)
-
-for a in "$@" ; do
-	printf '%s\0' "$a" >> "$tmp"
-done
-
-cache="${MEMOIZE_CACHE}/$(sha1sum "$tmp" | head -c 40)"
-rm "$tmp"
+cache="${MEMOIZE_CACHE}/$(memoize-args-key "$@")"
 
 rm -rf "$cache"
