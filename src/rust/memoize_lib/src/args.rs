@@ -29,3 +29,11 @@ pub fn parse ( ) -> (i64, Vec<String>) {
     let args: Vec<String> = env::args().collect();
     return _parse(&args);
 }
+
+pub fn dump ( args: &Vec<String> ) {
+
+    for arg in args {
+        print!("{}\0",arg)
+    }
+
+}

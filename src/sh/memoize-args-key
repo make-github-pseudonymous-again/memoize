@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+memoize-args-dump "$@" | sha1sum | head -c 40

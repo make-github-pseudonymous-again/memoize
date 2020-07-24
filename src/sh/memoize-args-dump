@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+for a in "$@" ; do
+	printf '%s\0' "$a"
+done
