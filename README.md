@@ -3,6 +3,7 @@
 > Cache executable calls.
 
 [![AUR package](https://img.shields.io/aur/version/memoize)](https://aur.archlinux.org/packages/memoize)
+[![Build](https://img.shields.io/travis/aureooms/memoize/master.svg)](https://travis-ci.org/aureooms/memoize/branches)
 
 ```shell
 $ memoize 60 ls
