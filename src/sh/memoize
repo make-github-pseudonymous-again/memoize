@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-: ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
+: "${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}"
 validity="$1"
 shift
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-: ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
+: "${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}"
 
 rm -rf "$MEMOIZE_CACHE"

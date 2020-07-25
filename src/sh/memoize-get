@@ -3,7 +3,7 @@
 # retrieves memoized value if not older that "$1" seconds
 # use "$1"=-1 to bypass the validity check
 
-: ${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}
+: "${MEMOIZE_CACHE:="${XDG_CACHE_HOME:-"$HOME/.cache"}/memoize"}"
 validity="$1"
 shift
 
