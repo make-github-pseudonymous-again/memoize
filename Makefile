@@ -1,4 +1,4 @@
-.PHONY: all install install-shell build-rust build-rust-release check-rust test-rust test-rust-bin test-rust-lib clean
+.PHONY: all install install-shell install-rust build-rust build-rust-release check-rust test test-cli test-rust-sources test-rust-sources-bin test-rust-sources-lib clean
 
 VERSION = 1.0.0
 PN = memoize
@@ -14,10 +14,11 @@ RUSTSRC = $(RUSTBINPACKAGE)/src/bin
 RUSTBIN = _build/rust/bin
 RUSTLIB = _build/rust/lib
 RUSTSOURCES = $(shell find $(RUSTSRC) -type f)
-RUSTBINARIES = $(basename $(subst $(RUSTSRC),$(RUSTBIN),$(RUSTSOURCES)))
+RUSTBINARIES_DEBUG = $(basename $(subst $(RUSTSRC),$(RUSTBIN)/debug,$(RUSTSOURCES)))
+RUSTBINARIES_RELEASE = $(basename $(subst $(RUSTSRC),$(RUSTBIN)/release,$(RUSTSOURCES)))
 
 all:
-	echo $(RUSTBINARIES)
+	@echo $(RUSTBINARIES_DEBUG)
 
 install: install-shell
 
@@ -26,8 +27,13 @@ install-shell:
 	mkdir -p "$(DESTDIR)$(BINDIR)"
 	install -Dm755 $(SHSRC)/* "$(DESTDIR)$(BINDIR)"
 
+install-rust: build-rust-release
+	@echo -e '\033[1;32minstalling rust binaries...\033[0m'
+	mkdir -p "$(DESTDIR)$(BINDIR)"
+	install -Dm755 $(shell find $(RUSTBIN)/release -maxdepth 1 -perm -111 -type f) "$(DESTDIR)$(BINDIR)"
+
 check-shell:
-	shellcheck src/sh/*
+	shellcheck $(SHSRC)/*
 
 build-rust-release: $(RUSTSOURCES)
 	cargo build \
@@ -46,15 +52,21 @@ check-rust: $(RUSTSOURCES)
 		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
 
-test-rust: test-rust-lib test-rust-bin
+test: test-rust-sources test-cli
 
-test-rust-bin: $(RUST)
+test-cli: build-rust
+	env PATH="$(abspath $(SHSRC)):$(PATH)" sh tests/run tests
+	env PATH="$(abspath $(RUSTBIN))/debug:$(PATH)" sh tests/run tests
+
+test-rust-sources: test-rust-sources-lib test-rust-sources-bin
+
+test-rust-sources-bin:
 	cargo test \
 		--verbose \
 		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTBIN)
 
-test-rust-lib: $(RUST)
+test-rust-sources-lib:
 	cargo test \
 		--verbose \
 		--manifest-path $(RUSTLIBPACKAGE)/Cargo.toml \

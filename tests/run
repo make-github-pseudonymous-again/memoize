@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+root="${1:-.}"
+exec="$(realpath "$0")"
+
+pushd "$root"
+if [ -e setup ] ; then
+	sh setup || exit 1
+fi
+
+find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filename; do
+	name="$(basename ${filename%.*})"
+	test="$(realpath "$filename")"
+	echo file "${name}.sh"
+	echo "$filename $name"
+	err="${name}.err"
+	out="${name}.out"
+	ret="${name}.ret"
+
+	scratch="$(mktemp --tmpdir --directory "memoize-test-cli_${name}.XXXXXXXX")"
+	mkdir "${scratch}/root"
+	mkdir "${scratch}/cache"
+	pushd "${scratch}/root"
+	env MEMOIZE_CACHE="${scratch}/cache" sh "$test" 1>"${scratch}/out" 2>"${scratch}/err"
+	rc="$?"
+	popd
+	if [ -e "$out" ] ; then
+		diff "$out" "${scratch}/out" || exit 1
+	fi
+	if [ -e "$err" ] ; then
+		diff "$err" "${scratch}/err" || exit 1
+	fi
+	if [ -e "$ret" ] ; then
+		test "$rc" -eq "$(cat "$ret")" || exit 1
+	fi
+	rm -rf "$scratch"
+done
+
+find . -maxdepth 1 -type d -print0 | while IFS= read -r -d '' directory; do
+	if [ "$directory" = '.' ] ; then continue ; fi
+	echo directory "$directory"
+	if [ -e "${directory}/run" ] ; then
+		sh "${directory}/run" "${directory}" || exit 1
+	else
+		sh "$exec" "${directory}" || exit 1
+	fi
+done
+
+if [ -e teardown ] ; then
+	sh teardown || exit 1
+fi
+popd
