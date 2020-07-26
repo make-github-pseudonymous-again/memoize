@@ -24,10 +24,6 @@ eval_last_cmd() {
 	if [ -n "$cmd" ] ; then
 		eval "$cmd" 1>"${scratch}/files/${cmdno}-stdout-got" 2>"${scratch}/files/${cmdno}-stderr-got"
 		rc="$?"
-		ensure_ends_with_newline "${scratch}/files/${cmdno}-stdout-got"
-		ensure_ends_with_newline "${scratch}/files/${cmdno}-stderr-got"
-		diff "${scratch}/files/${cmdno}-stdout-expected" "${scratch}/files/${cmdno}-stdout-got" || exit 1
-		diff "${scratch}/files/${cmdno}-stderr-expected" "${scratch}/files/${cmdno}-stderr-got" || exit 1
 		if [ "$ret" = "FAIL" ] ; then
 			if test "$rc" -eq 0 ; then
 				log 'Command succeeded but was expected to fail.'
@@ -39,6 +35,10 @@ eval_last_cmd() {
 				exit 1
 			fi
 		fi
+		ensure_ends_with_newline "${scratch}/files/${cmdno}-stdout-got"
+		ensure_ends_with_newline "${scratch}/files/${cmdno}-stderr-got"
+		diff "${scratch}/files/${cmdno}-stdout-expected" "${scratch}/files/${cmdno}-stdout-got" || exit 1
+		diff "${scratch}/files/${cmdno}-stderr-expected" "${scratch}/files/${cmdno}-stderr-got" || exit 1
 	fi
 }
 
