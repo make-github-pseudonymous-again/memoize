@@ -4,6 +4,7 @@ $ mkdir c
 $ mkdir a/d
 $ mkdir a/e
 $ mkdir a/d/z
+$ memoize-get 100 ls 2>/dev/null --> FAIL
 $ memoize 100 ls
 a
 b
@@ -16,7 +17,12 @@ c
 $ ls
 d
 e
+$ memoize-get 100 ls
+a
+b
+c
 $ memoize-rm ls
+$ memoize-get 100 ls 2>/dev/null --> FAIL
 $ memoize 100 ls
 d
 e
@@ -27,5 +33,6 @@ $ memoize 100 ls d
 z
 $ memoize-rm ls d
 # Cache is now invalidated
+$ memoize-get 100 ls d 2>/dev/null --> FAIL
 $ memoize 100 ls d --> FAIL
 >&2 ls: cannot access 'd': No such file or directory
