@@ -29,9 +29,15 @@ eval_last_cmd() {
 		diff "${scratch}/files/${cmdno}-stdout-expected" "${scratch}/files/${cmdno}-stdout-got" || exit 1
 		diff "${scratch}/files/${cmdno}-stderr-expected" "${scratch}/files/${cmdno}-stderr-got" || exit 1
 		if [ "$ret" = "FAIL" ] ; then
-			test "$rc" -ne 0 || exit 1
+			if test "$rc" -eq 0 ; then
+				log 'Command succeeded but was expected to fail.'
+				exit 1
+			fi
 		else
-			test "$rc" -eq "$ret" || exit 1
+			if test "$rc" -ne "$ret" ; then
+				log "Command exited with ${rc} but was expected to exit with ${ret}."
+				exit 1
+			fi
 		fi
 	fi
 }
@@ -41,7 +47,6 @@ lineno=0
 while IFS= read -r line; do
 	lineno=$((lineno+1))
 
-	printf "%s\n" "$line"
 	case "$line" in
 		\$*)
 			eval_last_cmd
@@ -71,6 +76,8 @@ while IFS= read -r line; do
 			printf "%s\n" "$line" >> "${scratch}/files/${cmdno}-stdout-expected"
 			;;
 	esac
+
+	printf "%s\n" "$line"
 
 done
 
