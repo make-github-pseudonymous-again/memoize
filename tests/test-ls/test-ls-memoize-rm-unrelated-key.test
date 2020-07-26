@@ -1,0 +1,30 @@
+$ mkdir a
+$ mkdir b
+$ mkdir c
+$ mkdir a/d
+$ mkdir a/e
+$ mkdir a/d/z
+$ memoize 100 ls
+a
+b
+c
+$ cd a
+$ memoize 100 ls
+a
+b
+c
+$ ls
+d
+e
+$ memoize-rm ls
+$ memoize 100 ls
+d
+e
+$ memoize 100 ls d
+z
+$ cd ..
+$ memoize 100 ls d
+z
+$ memoize-rm ls
+$ memoize 100 ls d
+z
