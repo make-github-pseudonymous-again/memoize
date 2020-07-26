@@ -1,0 +1,2 @@
+>&2 echo "SHELL: ${SHELL}"
+>&2 echo "WHICH memoize: $(which memoize)"

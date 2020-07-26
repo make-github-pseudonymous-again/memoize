@@ -1,21 +1,21 @@
 #!/usr/bin/env sh
 
-root="$(realpath ${1:-.})"
+root="$(realpath "${1:-.}")"
 exec="$(realpath "$0")"
 
-function log {
+log() {
 	>&2 echo "$@"
 }
 
 log "> Running ${exec} in directory ${root}."
 
-pushd "$root"
+cd "$root" || exit 2
 if [ -e setup ] ; then
 	sh setup || exit 1
 fi
 
-find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filename; do
-	name="$(basename ${filename%.*})"
+find . -maxdepth 1 -type f -name '*.sh' | while IFS= read -r filename; do
+	name="$(basename "${filename%.*}")"
 	test="$(realpath "$filename")"
 	log "> Running test file ${filename} (name=${name}, abspath=${test})."
 	err="${name}.err"
@@ -26,10 +26,10 @@ find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filen
 	mkdir "${scratch}/root"
 	mkdir "${scratch}/cache"
 	log "> Running sandbox ${scratch}/root"
-	pushd "${scratch}/root"
+	cd "${scratch}/root" || exit 2
 	env MEMOIZE_CACHE="${scratch}/cache" sh "$test" 1>"${scratch}/out" 2>"${scratch}/err"
 	rc="$?"
-	popd
+	cd "$OLDPWD" || exit 2
 	log "> Exiting sandbox ${scratch}/root"
 	if [ -e "$out" ] ; then
 		diff "$out" "${scratch}/out" || exit 1
@@ -43,7 +43,7 @@ find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filen
 	rm -rf "$scratch"
 done
 
-find . -maxdepth 1 -type d -print0 | while IFS= read -r -d '' directory; do
+find . -maxdepth 1 -type d | while IFS= read -r directory; do
 	if [ "$directory" = '.' ] ; then continue ; fi
 	if [ -e "${directory}/run" ] ; then
 		sh "${directory}/run" "${directory}" || exit 1
@@ -55,4 +55,3 @@ done
 if [ -e teardown ] ; then
 	sh teardown || exit 1
 fi
-popd
