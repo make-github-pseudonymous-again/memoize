@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 
-root="${1:-.}"
+root="$(realpath ${1:-.})"
 exec="$(realpath "$0")"
+
+function log {
+	>&2 echo "$@"
+}
+
+log "> Running ${exec} in directory ${root}."
 
 pushd "$root"
 if [ -e setup ] ; then
@@ -11,8 +17,7 @@ fi
 find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filename; do
 	name="$(basename ${filename%.*})"
 	test="$(realpath "$filename")"
-	echo file "${name}.sh"
-	echo "$filename $name"
+	log "> Running test file ${filename} (name=${name}, abspath=${test})."
 	err="${name}.err"
 	out="${name}.out"
 	ret="${name}.ret"
@@ -20,10 +25,12 @@ find . -maxdepth 1 -type f -name '*.sh' -print0 | while IFS= read -r -d '' filen
 	scratch="$(mktemp --tmpdir --directory "memoize-test-cli_${name}.XXXXXXXX")"
 	mkdir "${scratch}/root"
 	mkdir "${scratch}/cache"
+	log "> Running sandbox ${scratch}/root"
 	pushd "${scratch}/root"
 	env MEMOIZE_CACHE="${scratch}/cache" sh "$test" 1>"${scratch}/out" 2>"${scratch}/err"
 	rc="$?"
 	popd
+	log "> Exiting sandbox ${scratch}/root"
 	if [ -e "$out" ] ; then
 		diff "$out" "${scratch}/out" || exit 1
 	fi
@@ -38,7 +45,6 @@ done
 
 find . -maxdepth 1 -type d -print0 | while IFS= read -r -d '' directory; do
 	if [ "$directory" = '.' ] ; then continue ; fi
-	echo directory "$directory"
 	if [ -e "${directory}/run" ] ; then
 		sh "${directory}/run" "${directory}" || exit 1
 	else
