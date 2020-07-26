@@ -11,6 +11,12 @@ log() {
 	>&2 echo "$@"
 }
 
+ensure_ends_with_newline() {
+	if [ -n "$(tail -c1 "$1")" ] ; then
+		echo >> "$1"
+	fi
+}
+
 log "> Running sandbox ${scratch}/sandbox"
 cd "${scratch}/sandbox" || exit 2
 
@@ -18,6 +24,8 @@ eval_last_cmd() {
 	if [ -n "$cmd" ] ; then
 		eval "$cmd" 1>"${scratch}/files/${cmdno}-stdout-got" 2>"${scratch}/files/${cmdno}-stderr-got"
 		rc="$?"
+		ensure_ends_with_newline "${scratch}/files/${cmdno}-stdout-got"
+		ensure_ends_with_newline "${scratch}/files/${cmdno}-stderr-got"
 		diff "${scratch}/files/${cmdno}-stdout-expected" "${scratch}/files/${cmdno}-stdout-got" || exit 1
 		diff "${scratch}/files/${cmdno}-stderr-expected" "${scratch}/files/${cmdno}-stderr-got" || exit 1
 		if [ "$ret" = "FAIL" ] ; then
