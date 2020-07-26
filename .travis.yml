@@ -15,7 +15,6 @@ script:
     - make check-shell
     - make build-rust
     - make test
-    - |
-      zip -0 ccov.zip `find . \( -name "memoize*.gc*" \) -print`;
-      ./grcov ccov.zip -s . -t lcov --llvm --branch --ignore-not-existing --ignore "/*" -o lcov.info;
-      bash <(curl -s https://codecov.io/bash) -f lcov.info;
+    - zip -0 ccov.zip `find . \( -name "memoize*.gc*" \) -print`
+    - ./grcov ccov.zip -s . -t lcov --llvm --branch --ignore-not-existing --ignore "/*" -o lcov.info
+    - bash <(curl -s https://codecov.io/bash) -f lcov.info
