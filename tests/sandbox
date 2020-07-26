@@ -38,12 +38,12 @@ while IFS= read -r line; do
 		\$*)
 			eval_last_cmd
 			cmdno="$lineno"
-			ret="$(sed 's/.* --> \(.*\)/\1/g' <<< "$line")"
+			ret="$(printf "%s\n" "$line" | sed 's/.* --> \(.*\)/\1/g')"
 			if [ "$ret" != "$line" ] ; then
-				cmd="$(sed 's/\$ \(.*\) --> .*/\1/g' <<< "$line")"
+				cmd="$(printf "%s\n" "$line" | sed 's/\$ \(.*\) --> .*/\1/g')"
 			else
 				ret=0
-				cmd="$(sed 's/\$ \(.*\)/\1/g' <<< "$line")"
+				cmd="$(printf "%s\n" "$line" | sed 's/\$ \(.*\)/\1/g')"
 			fi
 			touch "${scratch}/files/${cmdno}-stdout-expected"
 			touch "${scratch}/files/${cmdno}-stderr-expected"
@@ -52,11 +52,11 @@ while IFS= read -r line; do
 			# Ignore comments.
 			;;
 		\>\&2*)
-			stderr="$(sed 's/>&2 \(.*\)/\1/g' <<< "$line")"
+			stderr="$(printf "%s\n" "$line" | sed 's/>&2 \(.*\)/\1/g')"
 			printf "%s\n" "$stderr" >> "${scratch}/files/${cmdno}-stderr-expected"
 			;;
 		\>\&1*)
-			stdout="$(sed 's/>&1 \(.*\)/\1/g' <<< "$line")"
+			stdout="$(printf "%s\n" "$line" | sed 's/>&1 \(.*\)/\1/g')"
 			printf "%s\n" "$stdout" >> "${scratch}/files/${cmdno}-stdout-expected"
 			;;
 		*)
