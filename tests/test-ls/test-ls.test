@@ -1,0 +1,31 @@
+$ mkdir a
+$ mkdir b
+$ mkdir c
+$ mkdir a/d
+$ mkdir a/e
+$ mkdir a/d/z
+$ memoize 1 ls
+a
+b
+c
+$ cd a
+$ memoize 1 ls
+a
+b
+c
+$ ls
+d
+e
+$ sleep 2
+$ memoize 1 ls
+d
+e
+$ memoize 1 ls d
+z
+$ cd ..
+$ memoize 1 ls d
+z
+$ sleep 2
+# Cache is now invalidated
+$ memoize 1 ls d --> FAIL
+>&2 ls: cannot access 'd': No such file or directory

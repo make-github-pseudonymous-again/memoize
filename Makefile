@@ -1,4 +1,4 @@
-.PHONY: all install install-shell install-rust build-rust build-rust-release check-rust test test-cli test-rust-sources test-rust-sources-bin test-rust-sources-lib clean
+.PHONY: all install install-shell install-rust build-rust build-rust-release check-rust test test-cli test-cli-shell test-cli-rust test-rust-sources test-rust-sources-bin test-rust-sources-lib clean
 
 VERSION = 1.0.0
 PN = memoize
@@ -54,8 +54,12 @@ check-rust: $(RUSTSOURCES)
 
 test: test-rust-sources test-cli
 
-test-cli: build-rust
+test-cli: test-cli-shell test-cli-rust
+
+test-cli-shell:
 	env PATH="$(abspath $(SHSRC)):$(PATH)" sh tests/run tests
+
+test-cli-rust: build-rust
 	env PATH="$(abspath $(RUSTBIN))/debug:$(PATH)" sh tests/run tests
 
 test-rust-sources: test-rust-sources-lib test-rust-sources-bin

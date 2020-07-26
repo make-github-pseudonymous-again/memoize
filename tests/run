@@ -2,6 +2,7 @@
 
 root="$(realpath "${1:-.}")"
 exec="$(realpath "$0")"
+sandbox="$(dirname "$exec")/sandbox"
 
 log() {
 	>&2 echo "$@"
@@ -14,34 +15,14 @@ if [ -e setup ] ; then
 	sh setup || exit 1
 fi
 
-find . -maxdepth 1 -type f -name '*.sh' | while IFS= read -r filename; do
+find . -maxdepth 1 -type f -name '*.test' | while IFS= read -r filename; do
 	name="$(basename "${filename%.*}")"
 	test="$(realpath "$filename")"
 	log "> Running test file ${filename} (name=${name}, abspath=${test})."
-	err="${name}.err"
-	out="${name}.out"
-	ret="${name}.ret"
 
-	scratch="$(mktemp --tmpdir --directory "memoize-test-cli_${name}.XXXXXXXX")"
-	mkdir "${scratch}/root"
-	mkdir "${scratch}/cache"
-	log "> Running sandbox ${scratch}/root"
-	cd "${scratch}/root" || exit 2
-	env MEMOIZE_CACHE="${scratch}/cache" sh "$test" 1>"${scratch}/out" 2>"${scratch}/err"
-	rc="$?"
-	cd "$OLDPWD" || exit 2
-	log "> Exiting sandbox ${scratch}/root"
-	if [ -e "$out" ] ; then
-		diff "$out" "${scratch}/out" || exit 1
-	fi
-	if [ -e "$err" ] ; then
-		diff "$err" "${scratch}/err" || exit 1
-	fi
-	if [ -e "$ret" ] ; then
-		test "$rc" -eq "$(cat "$ret")" || exit 1
-	fi
-	rm -rf "$scratch"
-done
+	sh "$sandbox" "$name" < "$test" || exit 1
+
+done || exit 1
 
 find . -maxdepth 1 -type d | while IFS= read -r directory; do
 	if [ "$directory" = '.' ] ; then continue ; fi
@@ -50,7 +31,7 @@ find . -maxdepth 1 -type d | while IFS= read -r directory; do
 	else
 		sh "$exec" "${directory}" || exit 1
 	fi
-done
+done || exit 1
 
 if [ -e teardown ] ; then
 	sh teardown || exit 1
