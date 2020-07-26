@@ -34,6 +34,7 @@ install-rust: build-rust-release
 
 check-shell:
 	shellcheck $(SHSRC)/*
+	shellcheck tests/run tests/setup tests/teardown tests/sandbox
 
 build-rust-release: $(RUSTSOURCES)
 	cargo build \
