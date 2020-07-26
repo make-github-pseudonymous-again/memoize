@@ -27,5 +27,7 @@ $ memoize 100 ls d
 z
 $ memoize-flush
 # Cache is now invalidated
+$ memoize-ft 100 ls d --> FAIL
+>&2 ls: cannot access 'd': No such file or directory
 $ memoize 100 ls d --> FAIL
 >&2 ls: cannot access 'd': No such file or directory

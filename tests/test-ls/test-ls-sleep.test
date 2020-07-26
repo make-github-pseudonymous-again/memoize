@@ -33,5 +33,13 @@ $ memoize-get 3 ls d
 z
 $ memoize-get -1 ls d
 z
+$ memoize-ft 3 ls d
+z
+$ memoize-ft 1 ls d --> FAIL
+>&2 ls: cannot access 'd': No such file or directory
+z
+$ memoize-ft 3 ls d --> FAIL
+>&2 ls: cannot access 'd': No such file or directory
+z
 $ memoize 1 ls d --> FAIL
 >&2 ls: cannot access 'd': No such file or directory
