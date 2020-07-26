@@ -4,7 +4,7 @@ mkdir c
 mkdir a/d
 mkdir a/e
 mkdir a/d/z
-function sep {
+sep() {
 	echo '---'
 	echo '---' >&2
 }
