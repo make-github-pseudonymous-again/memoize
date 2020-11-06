@@ -3,7 +3,7 @@
 > Cache executable calls.
 
 [![AUR package](https://img.shields.io/aur/version/memoize)](https://aur.archlinux.org/packages/memoize)
-[![Build](https://img.shields.io/travis/aureooms/memoize/master.svg)](https://travis-ci.org/aureooms/memoize/branches)
+[![Build](https://img.shields.io/travis/aureooms/memoize/main.svg)](https://travis-ci.org/aureooms/memoize/branches)
 [![Code coverage](https://img.shields.io/codecov/c/github/aureooms/memoize.svg)](https://codecov.io/gh/aureooms/memoize)
 
 ```shell
