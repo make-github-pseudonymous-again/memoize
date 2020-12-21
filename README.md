@@ -15,28 +15,17 @@ make DESTDIR=/ PREFIX=/usr install
 ## :woman_astronaut: Usage
 
 ```shell
-$ memoize 60 ls
-a
-b
-c
-$ cd a
-$ memoize 60 ls
-a
-b
-c
-$ ls
-d
-e
-$ sleep 60
-$ memoize 60 ls
-d
-e
-$ memoize 60 ls d
-z
-$ cd ..
-$ memoize 60 ls d
-z
-$ sleep 60
-$ memoize 60 ls d
-ls: cannot access 'd': No such file or directory
+$ cat fib
+n="$1"
+if [ "$n" -eq 0 ] ; then echo 0
+elif [ "$n" -eq 1 ] ; then echo 1
+else
+	a="$(MEMOIZE_CACHE="/tmp/${USER}-memoize" memoize 9999 sh fib $((n-1)))"
+	b="$(MEMOIZE_CACHE="/tmp/${USER}-memoize" memoize 9999 sh fib $((n-2)))"
+	echo "$a + $b" | bc
+fi
+$ sh fib 100
+354224848179261915075
+$ sh fib 200
+280571172992510140037611932413038677189525
 ```
