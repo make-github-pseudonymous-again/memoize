@@ -1,6 +1,6 @@
 :floppy_disk: memoize
 [![License](https://img.shields.io/github/license/aureooms/memoize.svg?style=flat)](https://raw.githubusercontent.com/aureooms/memoize/main/LICENSE)
-[![Build](https://img.shields.io/travis/aureooms/memoize/main.svg)](https://travis-ci.org/aureooms/memoize/branches)
+[![Tests](https://img.shields.io/github/workflow/status/aureooms/memoize/ci:test?event=push&label=tests)](https://github.com/aureooms/memoize/actions/workflows/ci:test.yml?query=branch:main)
 [![Code coverage](https://img.shields.io/codecov/c/github/aureooms/memoize.svg)](https://codecov.io/gh/aureooms/memoize)
 ==
 

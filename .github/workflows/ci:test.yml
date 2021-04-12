@@ -1,0 +1,38 @@
+name: ci:test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Continuous integration (tests)
+    runs-on: ubuntu-latest
+    env:
+      CARGO_INCREMENTAL: 0
+      RUSTFLAGS: -Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort
+      RUSTDOCFLAGS: -Cpanic=abort
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Install grcov 🔧
+        run: curl -L https://github.com/mozilla/grcov/releases/latest/download/grcov-linux-x86_64.tar.bz2 | tar jxf -
+
+      - name: Lint 👕
+        run: make check-shell
+
+      - name: Build 🏗️
+        run: make build-rust
+
+      - name: Test 🔬
+        run: make test
+
+      - name: Generate coverage report 🖨️
+        run: |
+          zip -0 ccov.zip `find . \( -name "memoize*.gc*" \) -print`
+          ./grcov ccov.zip -s . -t lcov --llvm --branch --ignore-not-existing --ignore "/*" -o lcov.info
+
+      - name: Publish coverage report 📰
+        uses: codecov/codecov-action@v1
+        with:
+          files: lcov.info
+          fail_ci_if_error: true
