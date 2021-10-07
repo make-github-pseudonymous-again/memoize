@@ -5,7 +5,7 @@ exec="$(realpath "$0")"
 sandbox="$(dirname "$exec")/sandbox"
 
 log() {
-	>&2 echo "$@"
+	>&2 printf '%s\n' "$@"
 }
 
 log "> Running ${exec} in directory ${root}."
