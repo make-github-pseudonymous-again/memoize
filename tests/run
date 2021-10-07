@@ -36,3 +36,5 @@ done || exit 1
 if [ -e teardown ] ; then
 	sh teardown || exit 1
 fi
+
+log "> All tests in ${root} passed!"
