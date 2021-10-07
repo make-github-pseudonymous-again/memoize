@@ -14,11 +14,11 @@ pub fn get_key ( cmdline: &Vec<String> ) -> String {
     let mut hasher = Sha1::new();
 
     for arg in cmdline {
-        hasher.input(arg);
-        hasher.input("\0");
+        hasher.update(arg);
+        hasher.update(b"\0");
     }
 
-    let hash = hasher.result();
+    let hash = hasher.finalize();
 
     return format!("{:x}", hash);
 
