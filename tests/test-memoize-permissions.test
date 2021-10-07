@@ -1,0 +1,5 @@
+$ mkdir x
+$ MEMOIZE_CACHE="x" memoize 1 ls
+x
+$ stat -c '%a' x
+700

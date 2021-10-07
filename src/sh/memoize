@@ -17,6 +17,7 @@ if [ -e "$O" ]; then
 	x=$((previous + validity - now))
 else
 	mkdir -p "$cache"
+	chmod 700 "$MEMOIZE_CACHE"
 	x=-1
 fi
 

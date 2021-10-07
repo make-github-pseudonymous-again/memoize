@@ -1,4 +1,5 @@
 use std::fs;
+use std::os::unix::fs::PermissionsExt;
 use std::process;
 
 use memoize_lib::args;
@@ -30,6 +31,9 @@ fn main () {
         false => {
             fs::create_dir_all(&cache_path)
                 .expect("Could not create cache dir");
+            let permissions = fs::Permissions::from_mode(0o700);
+            fs::set_permissions(&cache_root, permissions)
+                .expect("Could not set permissions on cache root.");
             false
         },
     } ;
