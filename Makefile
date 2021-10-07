@@ -1,4 +1,4 @@
-.PHONY: all install install-shell install-dash install-rust check-shell build-dash build-rust build-rust-release check-rust test test-cli test-cli-shell test-cli-rust test-rust-sources test-rust-sources-bin test-rust-sources-lib clean
+.PHONY: all install install-shell install-dash install-rust check-shell build-dash build-rust build-rust-release check-rust test test-cli test-cli-shell test-cli-rust test-rust-sources test-rust-sources-bin test-rust-sources-lib update update-rust-deps-lib update-rust-deps-bin clean
 
 VERSION = 1.0.0
 PN = memoize
@@ -89,6 +89,19 @@ test-rust-sources-lib:
 		--verbose \
 		--manifest-path $(RUSTLIBPACKAGE)/Cargo.toml \
 		--target-dir $(RUSTLIB)
+
+
+update-rust-deps-bin:
+	cargo update \
+		--verbose \
+		--manifest-path $(RUSTBINPACKAGE)/Cargo.toml
+
+update-rust-deps-lib:
+	cargo update \
+		--verbose \
+		--manifest-path $(RUSTLIBPACKAGE)/Cargo.toml
+
+update: update-rust-deps-lib update-rust-deps-bin
 
 clean:
 	rm -rf _build
