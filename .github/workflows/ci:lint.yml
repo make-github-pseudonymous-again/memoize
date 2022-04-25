@@ -1,0 +1,14 @@
+name: ci:lint
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Continuous integration (lint)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+
+      - name: Lint 👕
+        run: make check-shell
