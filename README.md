@@ -1,6 +1,6 @@
 :floppy_disk: memoize
 [![License](https://img.shields.io/github/license/make-github-pseudonymous-again/memoize.svg?style=flat)](https://raw.githubusercontent.com/make-github-pseudonymous-again/memoize/main/LICENSE)
-[![Tests](https://img.shields.io/github/workflow/status/make-github-pseudonymous-again/memoize/ci:test?event=push&label=tests)](https://github.com/make-github-pseudonymous-again/memoize/actions/workflows/ci:test.yml?query=branch:main)
+[![Tests](https://img.shields.io/github/actions/workflow/status/make-github-pseudonymous-again/memoize/ci:test.yml?branch=main&event=push&label=tests)](https://github.com/make-github-pseudonymous-again/memoize/actions/workflows/ci:test.yml?query=branch:main)
 [![Code coverage](https://img.shields.io/codecov/c/github/make-github-pseudonymous-again/memoize.svg)](https://codecov.io/gh/make-github-pseudonymous-again/memoize)
 ==
 
