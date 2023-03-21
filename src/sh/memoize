@@ -22,7 +22,7 @@ else
 fi
 
 if [ $x -lt 0 ]; then
-	eval "$@" 1>"$O" 2>"$E"
+	"$@" 1>"$O" 2>"$E"
 	echo "$?" > "$R"
 	echo "$now" > "$T"
 fi

@@ -27,7 +27,7 @@ fi
 
 if [ $x -lt 0 ]; then
 	tmp=$(mktemp --tmpdir "${USER}-memoize.XXXXXXXXXX")
-	eval "$@" 1>"$tmp" 2>"$E"
+	"$@" 1>"$tmp" 2>"$E"
 	rc="$?"
 	if [ "$rc" -eq 0 ]; then
 		cp "$tmp" "$O"
