@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 
-tempfile = "3.4.0"
+tempfile = "3.5.0"
 memoize_lib = { path = "../memoize_lib" }
