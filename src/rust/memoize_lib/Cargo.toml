@@ -8,5 +8,5 @@ edition = "2018"
 
 [dependencies]
 
-dirs = "5.0.0"
+dirs = "5.0.1"
 sha-1 = "0.10.1"
