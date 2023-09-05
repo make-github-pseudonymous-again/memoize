@@ -12,7 +12,7 @@ jobs:
       RUSTDOCFLAGS: -Cpanic=abort
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup rust 🦀
         uses: actions-rs/toolchain@v1
